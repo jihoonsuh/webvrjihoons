@@ -85,7 +85,7 @@ mainScene = ->
 		elevation: -10
 	
 	vrInfo = new VRLayer
-		heading: 160
+		heading: 140
 		elevation: 0
 		
 	vrMake = new VRLayer
@@ -186,55 +186,17 @@ mainScene = ->
 		
 	videoLayer.player.loop = true
 		
-# 	videocShow = new Animation
-# 		layer: videoContainer
-# 		properties:
-# 			opacity: 1
-# 			scaleX:1
-# 			scaleY:1
-# 			borderRadius: 0
-# 		time: 0.2
-# 			
-# 	videocHide = new Animation
-# 		layer: videoContainer
-# 		properties:
-# 			opacity: 0
-# 			scaleX:0.2
-# 			scaleY:0.4
-# 			borderRadius: 400
-# 		delay:0.1
-# 		time: 0.1
-# 		
-# 	videoShow = new Animation
-# 		layer: videoLayer
-# 		properties:
-# 			opacity: 1
-# 			scaleX:1
-# 			scaleY:1
-# 			borderRadius: 10
-# 		time: 0.2
-# 			
-# 	videoHide = new Animation
-# 		layer: videoLayer
-# 		properties:
-# 			opacity: 0
-# 			scaleX:0.2
-# 			scaleY:0.4
-# 			borderRadius: 400
-# 		delay:0.1
-# 		time: 0.1
-
 	bg_overlay = new Layer
 		backgroundColor: "#000000"
 		width: 2000
 		height: 2000
-		opacity: 0
+		opacity: 0.1
 		z:-5
 		
 	bgShow = new Animation
 		layer: bg_overlay
 		properties:
-			opacity:0.5
+			opacity:0.6
 		time:0.3
 		
 	bgHide = bgShow.reverse()
@@ -255,14 +217,33 @@ mainScene = ->
 		properties:
 			opacity: 1
 			scale:1
-		delay:0.1
 		time: 0.2
 	
 	iconsHide = iconsShow.reverse()
+	
+	meimg = new Layer
+		width: 400
+		height: 400
+		originX: 0.5
+		originY: 0.5
+		backgroundColor: "transparant"
+		image: 'images/meme.png'
+		opacity: 0
+		scale:0
+		z:20
+		
+	meShow = new Animation
+		layer: meimg
+		properties:
+			opacity: 1
+			scale:1
+		time: 0.2
+	
+	meHide = meShow.reverse()
 
 	#Textbox initialisation
 	textBox = new Layer
-		width: 700
+		width: 600
 		height: 350
 		originX: 0.5
 		originY: 0.5
@@ -287,15 +268,7 @@ mainScene = ->
 		
 
 			
-	textBoxHide = new Animation
-		layer: textBox
-		properties:
-			opacity: 0
-			scaleX:0.3
-			scaleY:0.5
-			borderRadius: 400
-		delay:0.1
-		time: 0.1
+	textBoxHide = textBoxShow.reverse()
 	
 	#Textbox content initialisation
 	text = new TextLayer
@@ -303,7 +276,7 @@ mainScene = ->
 		opacity: 0
 		textAlign: "left"
 		fontSize: 30
-		width: 624
+		width: 520
 		height: 300
 		fontFamily: 'Helvetica'
 		fontWeight: '400'
@@ -316,14 +289,10 @@ mainScene = ->
 		layer: text
 		properties:
 			opacity: 1
-		delay:0.1
 		time: 0.2
 			
-	textHide = new Animation
-		layer: text
-		properties:
-			opacity: 0
-		time: 0.1
+	textHide = textShow.reverse()
+
 	
 	#Textbox title initialisation
 	textTitle = new TextLayer
@@ -331,8 +300,8 @@ mainScene = ->
 		opacity: 0
 		textAlign: "left"
 		fontSize: 30
-		width: 620
-		height: 32
+		width: 520
+		height: 22
 		fontFamily: "Verdana"
 		fontWeight: "900"
 		textTransform: "uppercase"
@@ -342,14 +311,9 @@ mainScene = ->
 		layer: textTitle
 		properties:
 			opacity: 1
-		delay:0.1
 		time: 0.2
-			
-	textTitleHide = new Animation
-		layer: textTitle
-		properties:
-			opacity: 0
-		time: 0.1
+	
+	textTitleHide=textTitleShow.reverse()
 	
 	#Project text elements to cubemap distortion
 	vrForeground.projectLayer(textBox)
@@ -370,8 +334,8 @@ mainScene = ->
 		vrTooltips[i].height = 100
 		vrTooltips[i].borderRadius = 50
 		vrTooltips[i].shadowBlur = 4
-		vrTooltips[i].shadowSpread = 2
-		vrTooltips[i].shadowColor = "rgba(0,0,0,0.1)"
+		vrTooltips[i].shadowSpread = 5
+		vrTooltips[i].shadowColor = "rgba(0,0,0,0.07)"
 		vrForeground.projectLayer(vrTooltips[i])
 	
 	#Add & style reticle
@@ -467,6 +431,7 @@ mainScene = ->
 		introHide.start()
 		intro2Hide.start()
 		bgShow.start()
+
 		if currentTooltipID == 0 
 			videoLayer.opacity=1
 			videoLayer.player.play()
@@ -488,6 +453,37 @@ mainScene = ->
 			
 			vrForeground.projectLayer(videoContainer)
 			vrForeground.projectLayer(videoLayer)
+			
+		else if currentTooltipID == 1 
+			
+			meShow.start()
+			text.text = textContent[currentTooltipID]
+			textTitle.text = textTitles[currentTooltipID]
+			textTitleShow.start()
+			textShow.start()
+				
+			tooltipArray = vrTooltips.slice(0)
+			tooltipArray.splice(currentTooltipID, 1)
+			for i in [0...tooltipArray.length]
+				tooltipFadeOut = new Animation
+					layer: tooltipArray[i]
+					properties:
+						opacity: 0
+					time: 0.5
+				tooltipFadeOut.start()
+				
+			textTitle.width=400
+			text.width=400
+			meimg.heading = currentToolTipHeading-10
+			meimg.elevation = currentTooltipElevation
+			textTitle.heading = currentToolTipHeading+12
+			textTitle.elevation = currentTooltipElevation+5
+			text.heading = currentToolTipHeading+12
+			text.elevation = currentTooltipElevation-1
+
+			vrForeground.projectLayer(meimg)
+			vrForeground.projectLayer(textTitle)
+			vrForeground.projectLayer(text)
 				
 		else if currentTooltipID == 2 
 			
@@ -508,7 +504,6 @@ mainScene = ->
 			icons.elevation = currentTooltipElevation
 			vrForeground.projectLayer(icons)
 
-		
 		else
 			text.text = textContent[currentTooltipID]
 			textTitle.text = textTitles[currentTooltipID]
@@ -529,9 +524,9 @@ mainScene = ->
 			textBox.heading = currentToolTipHeading + 0
 			textBox.elevation = currentTooltipElevation 
 			textTitle.heading = currentToolTipHeading
-			textTitle.elevation = currentTooltipElevation+5
+			textTitle.elevation = currentTooltipElevation+6
 			text.heading = currentToolTipHeading + 0
-			text.elevation = currentTooltipElevation-1
+			text.elevation = currentTooltipElevation
 			
 			textBox.backgroundColor = bgColors[currentTooltipID]
 			vrForeground.projectLayer(textBox)
@@ -556,10 +551,29 @@ mainScene = ->
 						opacity: 1
 					time: 0.5
 				tooltipFadeIn.start()
-		
+				
+		else if currentTooltipID == 1 
+			
+			meHide.start()
+			textTitleHide.start()
+			textHide.start()
+			textTitle.width=520
+			text.width=520
+			
+			tooltipArray = vrTooltips.slice(0)
+			tooltipArray.splice(currentTooltipID, 1)
+			for i in [0...tooltipArray.length]
+				tooltipFadeIn = new Animation
+					layer: tooltipArray[i]
+					properties:
+						opacity: 1
+					time: 0.5
+				tooltipFadeIn.start()
+				
 		else if currentTooltipID == 2 
 			
 			iconsHide.start()
+			
 			
 			tooltipArray = vrTooltips.slice(0)
 			tooltipArray.splice(currentTooltipID, 1)
@@ -649,12 +663,9 @@ centerClick = new Layer
 	height:120
 	
 centerClick.onTap ->
-		if heading<270
-			vrForeground.animate
-				heading: 0
-				elevation: 0
-		else
-			vrForeground.animate
-				heading: 360
-				elevation: 0
+	vrForeground.heading = 180
+	vrForeground.elevation = 0
+	heading = vrForeground.heading
+	elevation = vrForeground.elevation
+		
 

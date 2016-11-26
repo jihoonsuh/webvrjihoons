@@ -8,7 +8,7 @@
   "deviceType" : "apple-iphone-7-jet-black",
   "selectedHand" : "",
   "updateDelay" : 0.3,
-  "deviceScale" : 0.5,
+  "deviceScale" : 0.25,
   "foldedCodeRanges" : [
     "{0, 185}"
   ],
