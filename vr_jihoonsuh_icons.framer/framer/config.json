@@ -1,0 +1,17 @@
+{
+  "propertyPanelToggleStates" : {
+    "Filters" : false
+  },
+  "deviceOrientation" : 90,
+  "sharedPrototype" : 1,
+  "contentScale" : 1,
+  "deviceType" : "apple-iphone-7-jet-black",
+  "selectedHand" : "",
+  "updateDelay" : 0.3,
+  "deviceScale" : 0.5,
+  "foldedCodeRanges" : [
+    "{0, 185}"
+  ],
+  "orientation" : 90,
+  "fullScreen" : false
+}
