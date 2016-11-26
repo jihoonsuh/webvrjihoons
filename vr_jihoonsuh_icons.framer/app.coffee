@@ -30,7 +30,7 @@ window.onresize = ->
 	vrForeground.size = Screen.size
 
 
-vrForeground.heading = 0
+vrForeground.heading = 180
 heading = vrForeground.heading
 
 
@@ -81,27 +81,27 @@ mainScene = ->
 	
 	#Add tooltips and define their positions
 	vrVideo = new VRLayer
-		heading: 0
+		heading: 180
 		elevation: -10
 	
 	vrInfo = new VRLayer
-		heading: -20
+		heading: 160
 		elevation: 0
 		
 	vrMake = new VRLayer
-		heading: 20
+		heading: 200
 		elevation: 0
 		
 	vrWeb = new VRLayer
-		heading: 40
+		heading: 220
 		elevation: 0
 		
 	vrMe = new VRLayer
-		heading: -40
+		heading: 160
 		elevation: 0
 		
 	introText = new TextLayer
-		heading: 0
+		heading: 180
 		elevation: 0
 		color: "rgba(255,255,255,0.7)"
 		textAlign: "center"
@@ -113,7 +113,7 @@ mainScene = ->
 			
 		
 	introText2 = new TextLayer
-		heading: 0
+		heading: 180
 		elevation: -3
 		color: "#fff"
 		textAlign: "center"
@@ -156,74 +156,73 @@ mainScene = ->
 	# create the video layer
 	
 	videoContainer = new VRLayer
-		heading: -30
-		elevation: 0
-		x: Align.center
-		y: Align.center
+# 		heading: -30
+# 		elevation: 0
+		#x: Align.center
+		#y: Align.center
 		originX:0.5
 		originY:0.5
-		width:1000
-		height:1000*(9/16)
+		width:900
+		height:506
 		backgroundColor:'transparant'
-		opacity: 0
-		scaleX:0.2
-		scaleY:0.4
+		#scaleX:0.2
+		#scaleY:0.4
 		z:20
 		
 	
 	videoLayer = new VideoLayer
-		width:1000
-		height:1000*(9/16)
-		x: Align.center
-		y: Align.center
+		width:900
+		height:506
+		#x: Align.center
+		#y: Align.center
 		originX:0.5
 		originY:0.5
-		video: "images/bg_low.mp4"
-		scaleX:0.2
-		scaleY:0.4
-		borderRadius:400
+		video: "images/low.mp4"
+		#scaleX:0.2
+		#scaleY:0.4
+		opacity: 0
 		z:21
 		superLayer: videoContainer
 		
 	videoLayer.player.loop = true
 		
-	videocShow = new Animation
-		layer: videoContainer
-		properties:
-			opacity: 1
-			scaleX:1
-			scaleY:1
-			borderRadius: 0
-		time: 0.2
-			
-	videocHide = new Animation
-		layer: videoContainer
-		properties:
-			opacity: 0
-			scaleX:0.2
-			scaleY:0.4
-			borderRadius: 400
-		delay:0.1
-		time: 0.1
-		
-	videoShow = new Animation
-		layer: videoLayer
-		properties:
-			opacity: 1
-			scaleX:1
-			scaleY:1
-			borderRadius: 10
-		time: 0.2
-			
-	videoHide = new Animation
-		layer: videoLayer
-		properties:
-			opacity: 0
-			scaleX:0.2
-			scaleY:0.4
-			borderRadius: 400
-		delay:0.1
-		time: 0.1
+# 	videocShow = new Animation
+# 		layer: videoContainer
+# 		properties:
+# 			opacity: 1
+# 			scaleX:1
+# 			scaleY:1
+# 			borderRadius: 0
+# 		time: 0.2
+# 			
+# 	videocHide = new Animation
+# 		layer: videoContainer
+# 		properties:
+# 			opacity: 0
+# 			scaleX:0.2
+# 			scaleY:0.4
+# 			borderRadius: 400
+# 		delay:0.1
+# 		time: 0.1
+# 		
+# 	videoShow = new Animation
+# 		layer: videoLayer
+# 		properties:
+# 			opacity: 1
+# 			scaleX:1
+# 			scaleY:1
+# 			borderRadius: 10
+# 		time: 0.2
+# 			
+# 	videoHide = new Animation
+# 		layer: videoLayer
+# 		properties:
+# 			opacity: 0
+# 			scaleX:0.2
+# 			scaleY:0.4
+# 			borderRadius: 400
+# 		delay:0.1
+# 		time: 0.1
 
 	bg_overlay = new Layer
 		backgroundColor: "#000000"
@@ -464,19 +463,14 @@ mainScene = ->
 	
 	#Do stuff if reticle is over a tooltip
 	onTooltipFound = (currentToolTipHeading, currentTooltipElevation) ->
+		print currentTooltipID
 		introHide.start()
 		intro2Hide.start()
 		bgShow.start()
 		if currentTooltipID == 0 
-			videocShow.start()
-			videoShow.start()
-			videoContainer.heading = currentToolTipHeading + 0
-			videoContainer.elevation = currentTooltipElevation 
-			videoLayer.heading = currentToolTipHeading
-			videoLayer.elevation = currentTooltipElevation+0
-			
-			
-			
+			videoLayer.opacity=1
+			videoLayer.player.play()
+
 			tooltipArray = vrTooltips.slice(0)
 			tooltipArray.splice(currentTooltipID, 1)
 			for i in [0...tooltipArray.length]
@@ -486,11 +480,14 @@ mainScene = ->
 						opacity: 0
 					time: 0.5
 				tooltipFadeOut.start()
+				
+			videoContainer.heading = currentToolTipHeading + 0
+			videoContainer.elevation = currentTooltipElevation 
+			videoLayer.heading = currentToolTipHeading
+			videoLayer.elevation = currentTooltipElevation+0
 			
 			vrForeground.projectLayer(videoContainer)
 			vrForeground.projectLayer(videoLayer)
-
-			videoLayer.player.play()
 				
 		else if currentTooltipID == 2 
 			
@@ -547,8 +544,7 @@ mainScene = ->
 		intro2Show.start()
 		bgHide.start()
 		if currentTooltipID == 0 
-			videocHide.start()
-			videoHide.start()
+			videoLayer.opacity=0
 			videoLayer.player.pause()
 				
 			tooltipArray = vrTooltips.slice(0)
@@ -620,7 +616,7 @@ monitorTitle = "Video"
 monitorText = ""
 
 infoTitle = "About me"
-infoText = "I am a maker and designer interested natural interaction in augmented & immersive experience and "
+infoText = "I am a maker and designer interested in natural interaction and augmented & immersive experience"
 
 toolTitle = "Skills and Tools"
 toolText = "My expertise lie hardware/software prototyping, product/UX design, and user research."
